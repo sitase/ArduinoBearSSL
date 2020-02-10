@@ -59,6 +59,7 @@ public:
   void setEccSlot(int ecc508KeySlot, const byte cert[], int certLength);
   void setEccSlot(int ecc508KeySlot, const char cert[]);
 
+  void setProtocolNames(const char** protocolNames,int n_protocols);
   int errorCode();
 
 private:
@@ -75,6 +76,9 @@ private:
   br_ec_private_key _ecKey;
   br_x509_certificate _ecCert;
   bool _ecCertDynamic;
+
+  const char** _protocol_names;
+  int _n_protocol_names;
 
   br_ssl_client_context _sc;
   br_x509_minimal_context _xc;

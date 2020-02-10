@@ -47,6 +47,9 @@ BearSSLClient::BearSSLClient(Client& client, const br_x509_trust_anchor* myTAs, 
   _ecCert.data = NULL;
   _ecCert.data_len = 0;
   _ecCertDynamic = false;
+
+  _protocol_names=NULL;
+  _n_protocol_names=0;
 }
 
 BearSSLClient::~BearSSLClient()
@@ -238,6 +241,10 @@ void BearSSLClient::setEccSlot(int ecc508KeySlot, const char cert[])
   }
 }
 
+void BearSSLClient::setProtocolNames(const char **protocolNames, int n_protocols) {
+    _protocol_names=protocolNames;
+    _n_protocol_names=n_protocols;
+}
 int BearSSLClient::errorCode()
 {
   return br_ssl_engine_last_error(&_sc.eng);
@@ -273,6 +280,8 @@ int BearSSLClient::connectSSL(const char* host)
 
   // set the hostname used for SNI
   br_ssl_client_reset(&_sc, host, 0);
+
+  br_ssl_engine_set_protocol_names(&_sc.eng,_protocol_names,_n_protocol_names);
 
   // get the current time and set it for X.509 validation
   uint32_t now = ArduinoBearSSL.getTime();
